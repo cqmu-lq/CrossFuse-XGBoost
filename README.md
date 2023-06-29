@@ -4,7 +4,7 @@
 
 This repository contains the data and code for the paper titled "CrossFuse-XGBoost: Accurate prediction of maximum daily recommended dose through multi-feature fusion and cross-validation screening".
 
-<img src="https://github.com/cqmu-lq/CrossFuse-XGBoost/blob/main/src/img/Figure%201.jpg" width="800" height="600" alt="CrossFuse"/><br/>
+<img src="https://github.com/cqmu-lq/CrossFuse-XGBoost/blob/main/src/img/Figure%201.jpg" width="1200" height="900" alt="CrossFuse"/><br/>
 
 
 ## Data Availability
