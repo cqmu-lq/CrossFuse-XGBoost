@@ -10,7 +10,7 @@ This repository contains the data and code for the paper titled "CrossFuse-XGBoo
 ## Data Availability
 The data used in this study, along with the software code, are made available in this repository to ensure transparency and reproducibility of the findings. The following files are included:
 
-1. **src/data**: The dataset used for training and evaluation. Each row represents a compound with its associated features and the maximum daily recommended dose.
+1. **src/data**: The dataset used for training and external validation sets. Each row represents a compound with its associated features and the maximum daily recommended dose.
 
 2. **src/code**: The Python code for implementing the CrossFuse-XGBoost method and performing the prediction.
 
@@ -19,7 +19,7 @@ To use the CrossFuse-XGBoost method and reproduce the results, follow these step
 
 1. Clone or download this repository to your local machine.
 
-2. Install the required dependencies listed in "src/data/requirements.txt" using the package manager of your choice.
+2. Install the required dependencies listed in "src/requirements.txt" using the package manager of your choice.
 
 3. Run every cell of "src/data/crossfuse_xgboost.ipynb" according to the instructions in Jupyter. Make sure that the data set is stored in the same path as specified in the script.
 
