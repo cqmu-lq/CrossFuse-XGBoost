@@ -23,7 +23,7 @@ To use the CrossFuse-XGBoost method and reproduce the results, follow these step
 
 3. Run every cell of "src/data/crossfuse_xgboost.ipynb" according to the instructions in Jupyter. Make sure that the data set is stored in the same path as specified in the script.
 
-4. The script will execute the CrossFuse-XGBoost method and generate the predicted maximum daily recommended dose for each compound in the dataset.
+4. The script will execute the CrossFuse-XGBoost method and generate the predicted maximum daily recommended dose for each compound in the dataset. Each cell has a functional comment about the result.
 
 Please refer to the code comments for further instructions on customizing the method or adapting it to your specific use case.
 
