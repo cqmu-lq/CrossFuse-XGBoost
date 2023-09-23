@@ -21,7 +21,7 @@ To utilize the CrossFuse-XGBoost and replicate the research results, please foll
 
 2. Install the required dependencies listed in "src/requirements.txt" using your preferred package manager.
 
-3. Run every cell of "src/data/crossfuse_xgboost.ipynb" in sequence according to the instructions in Jupyter Notebook. Make sure that the data set is stored in the same path as specified in the script.
+3. Run every cell of "src/data/crossfuse_xgboost.ipynb" in sequence in Jupyter Notebook. Make sure that the data set is stored in the same path as specified in the script.
 
 4. The script will execute the workflow of CrossFuse-XGBoost and generate the predicted maximum recommended daily dose (MRDD) for each compound in the dataset. Comments and functional annotations were added to the code to explain its purpose.
 
