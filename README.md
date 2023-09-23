@@ -2,7 +2,7 @@
 ### CrossFuse-XGBoost: Accurate prediction of the maximum recommended daily dose through multifeature fusion, cross-validation screening and extreme gradient boosting
 ### Preamble
 
-This repository contains the dataset and code for the paper titled "CrossFuse-XGBoost: Accurate prediction of the maximum daily recommended dose through multifeature fusion, cross-validation screening and extreme gradient boosting".
+This repository contains the dataset and code for the paper titled "CrossFuse-XGBoost: Accurate prediction of the maximum recommended daily dose through multifeature fusion, cross-validation screening and extreme gradient boosting".
 
 <img src="https://github.com/cqmu-lq/CrossFuse-XGBoost/blob/main/src/img/Figure%201.jpg" alt="CrossFuse"/><br/>
 
