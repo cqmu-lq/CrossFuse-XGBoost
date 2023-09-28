@@ -1,20 +1,19 @@
 import numpy as np
 import pickle
 
-"""数据处理"""
-from sklearn import preprocessing,metrics #数据处理
-from sklearn.model_selection import GridSearchCV,train_test_split #调参
-from sklearn.model_selection import RepeatedKFold,cross_validate,cross_val_score #交叉验证
+from sklearn import preprocessing,metrics
+from sklearn.model_selection import GridSearchCV,train_test_split # modules for parameter tunning
+from sklearn.model_selection import RepeatedKFold,cross_validate,cross_val_score # modules for cross-validation
 # from lazypredict.Supervised import LazyClassifier, LazyRegressor
 
-"""公共方法"""
-# 读取pkl文件
+"""public methods"""
+# Read data from a pkl file.
 def read_pkl(filename):
     with open(filename, 'rb') as f:
         data=pickle.load(f)
     return data
 
-# 写入pkl文件
+# Write data into a pkl file.
 def write_pkl(filename,data):
     try:
         with open(filename,'wb') as f:
@@ -23,8 +22,9 @@ def write_pkl(filename,data):
     except Exception as e:
         print('error:',e)
 
-# ========打印输出
-# 输入：传入list，输入均值，最大值，最小值，保留三位有效数字
+# ======== print statistics
+# @param score_list：a list of scores
+# @return: the mean value, the standard deviation, the maximum and the minimum with 4 digits after the decimal point.
 def output_res(score_list,algorithm_name):
     score_array=np.array(score_list)
     avg_data=np.around(np.average(score_array),4)
@@ -33,27 +33,30 @@ def output_res(score_list,algorithm_name):
     max_data=np.around(max(score_array),4)
     print(algorithm_name,"  avg:",avg_data,"std:",std_data," min:",min_data," max:",max_data)
     
-# ========标准化和归一化方法
-# 输入：需要处理的数据
-# 输出：处理完的数据
+# ======= Normalization methods
+# @param X_data：feature vectors
+# @return：standarized feature vectors
 from sklearn import preprocessing
 def standard_norm(X_data):
-    # 标准化
+    # Standarization process
     std = preprocessing.StandardScaler()
     X_data= std.fit_transform(X_data)
 
-    # 归一化处理
+    # Normalization process
     mms=preprocessing.MinMaxScaler()
 #     mms=preprocessing.MaxAbsScaler()
     X_data=mms.fit_transform(X_data)
-    print("标准化后维度：",X_data.shape)
+    print("The dimensionality after normalization: ",X_data.shape)
     return X_data
 
 
-"""模型评价方法"""
-# ========交叉验证
-# 输入：模型字典，评价分数类型，X数据，Y数据,n_jobs
-# 输出：
+"""Model evaluation method"""
+# ======== Cross-validation
+# @param model_dict：the dictionary of models
+# @param eval_score: the name of evaluation index
+# @param X_all: input features 
+# @param y_all: data labels
+# @param n_jobs: the number of jobs to run in parallel. -1 means to use all processors.
 def cross_val(model_dict,eval_score,X_all,y_all,n_jobs):
     for name,model in model_dict.items():
         cv=RepeatedKFold(n_splits=10, n_repeats=1, random_state=10)
@@ -61,9 +64,10 @@ def cross_val(model_dict,eval_score,X_all,y_all,n_jobs):
         output_res(cross_res,name)
         
 
-# ========交叉验证---计算相关系数
-# 输入：模型字典，X数据，Y数据
-# 输出：
+# ======== Cross-validation using the correlation coefficient
+# @param model_dict：the dictionary of models
+# @param X_all: input features 
+# @param y_all: data labels
 from sklearn.model_selection import RepeatedKFold
 def correlation_cross_val(model_dict,X_all,y_all):
     for name,model in model_dict.items():
@@ -74,8 +78,8 @@ from scipy import stats
 def cal_correlation(reg_modelname,reg_model,X_all,y_all):
     pearsonr_corr_list=[]
     spearmanr_corr_list=[]
-    train_index_list,test_index_list,Y_test_list,Y_pre_list=[],[],[],[] #存储每折交叉验证的值
-    df_2list=[]# 存放每折交叉验证的特征重要性df
+    train_index_list,test_index_list,Y_test_list,Y_pre_list=[],[],[],[] # stores the data set for each iteration of cross validation.
+    df_2list=[]# stores the feature importance for each iteration of cross validation.
     
     cv=RepeatedKFold(n_splits=40, n_repeats=1, random_state=12)
     for (train_index, test_index) in cv.split(X_all):
@@ -98,7 +102,7 @@ def cal_correlation(reg_modelname,reg_model,X_all,y_all):
         spearmanr_corr=stats.spearmanr(Y_pre,Y_test)[0]
         spearmanr_corr_list.append(spearmanr_corr)
         
-        # 生成的是（10,n）的二维列表[[],[]]
+        # generates a 2-dimensional list with a shape of (40, n)
         train_index_list.append(train_index.tolist())
         test_index_list.append(test_index.tolist())
         Y_test_list.append(Y_test.tolist())
@@ -110,50 +114,51 @@ def cal_correlation(reg_modelname,reg_model,X_all,y_all):
     return train_index_list,test_index_list,Y_test_list,Y_pre_list,df_2list
     
 
-"""获取指纹"""
+"""Get standardized SMILES string"""
 from rdkit import Chem
 import deepchem as dc
-# ========标准化smiles
-# 输入：原smiles列表
-# 输出：新smiles列表
+# ======== standardized smiles
+# @param X_smiles：old smiles list
+# @return：new standardized smiles list
 def standard_smi(X_smiles):
     X_smiles_standard=[]
     for one_smile in X_smiles:
         cs=Chem.CanonSmiles(one_smile)
         X_smiles_standard.append(cs)
-    print('smiles长度:',len(X_smiles_standard))
+    print('smiles length:',len(X_smiles_standard))
     return X_smiles_standard
-# ========生成指纹
-# 输入：标准化后的smiles,要保存的路径
-# 输出：不同的分子指纹
+# ======== Generate molecular fingerprints
+# @param X_smiles_standard：standarized smiles
+# @param filepath: the save directory
+# @return: all kinds of molecular fingerprints
 import numpy as np
 def make_fps(X_smiles_standard,X_canonical_smiles,filepath):
     
-    # 循环指纹
+    # Circular Fingerprint
     featurizer = dc.feat.CircularFingerprint(size=600)
     Xfp_circul=xsmiles_fp_list1=featurizer.featurize(X_smiles_standard)
-    np.save(filepath+'循环指纹.npy',Xfp_circul)
-    print("循环指纹：",Xfp_circul.shape)
+    np.save(filepath+'CircularFingerprint.npy',Xfp_circul)
+    print("CircularFingerprint：",Xfp_circul.shape)
 
-    # MACCSKeysFingerprint
+    # MACCS Keys Fingerprint
     featurizer = dc.feat.MACCSKeysFingerprint()
     Xfp_maccsk=featurizer.featurize(X_smiles_standard)
     np.save(filepath+'MACCSKeysFingerprint.npy',Xfp_maccsk)
     print("MACCSKeysFingerprint：",Xfp_maccsk.shape)
 
-    # PubChemFingerprint--881列
+    # PubChem Fingerprint--881 columns
     featurizer = dc.feat.PubChemFingerprint()
     Xfp_pubchem = featurizer.featurize(X_canonical_smiles)
     np.save(filepath+'PubChemFingerprint.npy',Xfp_pubchem)
     print("PubChemFingerprint：",Xfp_pubchem.shape)
 
-    #RDKitDescriptors
+    #RDKit Descriptors
     featurizer = dc.feat.RDKitDescriptors()
     Xfp_rdkit=featurizer.featurize(X_smiles_standard)
     np.save(filepath+'RDKitDescriptors.npy',Xfp_rdkit)
     print("RDKitDescriptors：",Xfp_rdkit.shape)
     
-    # MordredDescriptors
+    # Mordred Descriptors
     featurizer = dc.feat.MordredDescriptors()
     Xfp_md_3d = featurizer.featurize(X_smiles_standard)
     featurizer = dc.feat.MordredDescriptors(ignore_3D=True)
@@ -163,9 +168,11 @@ def make_fps(X_smiles_standard,X_canonical_smiles,filepath):
     
     return Xfp_circul,Xfp_maccsk,Xfp_pubchem,Xfp_rdkit,Xfp_md_3d,Xfp_md
 
-# ========指纹数据转换为dataframe，修改列名，并保存为csv
-# 输入：列名前缀，指纹数据的array，保存路径
-# 输出：指纹数据的dataframe
+# ======== Transform molecular fingerprints to dataframe. Adjust its column name and save it in csv format.
+# @param fp_name：the column name
+# @param fp_array: the array of molecular fingerprints
+# @param filepath: the save directory
+# @return：a dataframe of the given molecular fingerprints
 import pandas as pd
 def array2df(fp_name,fp_array,filepath):
     row_num,col_num=fp_array.shape
@@ -179,100 +186,101 @@ def array2df(fp_name,fp_array,filepath):
     print(filepath+filename)
     return fp_df
 
-"""回归模型"""
-from sklearn.linear_model import LinearRegression,Lars #线性回归
-from sklearn.neighbors import KNeighborsRegressor #k近邻回归
-from sklearn.tree import DecisionTreeRegressor #回归树
-from sklearn.svm import SVR #支持向量机回归
-from sklearn.neural_network import MLPRegressor #神经网络
-#集成学习：Adaboost,随机森林,极端随机森林,提升树
+"""regression model"""
+from sklearn.linear_model import LinearRegression,Lars # linear regression
+from sklearn.neighbors import KNeighborsRegressor # k-nearest neighbor regression
+from sklearn.tree import DecisionTreeRegressor # regression tree
+
+from sklearn.svm import SVR # support vector machine regression
+from sklearn.neural_network import MLPRegressor # ANN
+# Ensemble learning: Adaboost, Random Forest, Extremely Random Forest, Gradient Boosting Tree
 from sklearn.ensemble import AdaBoostRegressor,RandomForestRegressor,ExtraTreesRegressor,GradientBoostingRegressor,BaggingRegressor
 from xgboost import XGBRegressor #XGBoost
 
 def regression_model(n_jobs):
     model_dict={}
-    #线性回归
+# Linear regression
 #     lr_model=LinearRegression(n_jobs=6) 
-#     model_dict["线性回归"]=lr_model
-    #岭回归
+#     model_dict["LinearRegressor"]=lr_model
+# Ridge regression
 #     lars_model=Lars() 
-#     model_dict["岭回归"]=lars_model
-    #k近邻回归
+#     model_dict["RidgeRegressor"]=lars_model
+    # k-nearest neighbor regression
     knr_model=KNeighborsRegressor(weights="uniform",n_jobs=13) 
-    model_dict["k近邻回归"]=knr_model
-    #回归树
+    model_dict["KNN"]=knr_model
+    # Regression Tree
     dtreer_model=DecisionTreeRegressor() 
-    model_dict["回归树"]=dtreer_model
-    #支持向量机回归
+    model_dict["RegTree"]=dtreer_model
+# SVM regression
 #     svr_model=SVR(kernel="linear") 
-#     model_dict["支持向量机回归"]=svr_model
-    #神经网络
+#     model_dict["SVR"]=svr_model
+    # ANN
     mlpr_model=MLPRegressor(max_iter=5000) 
-    model_dict["神经网络"]=mlpr_model
+    model_dict["ANN"]=mlpr_model
     
-    #Adaboost
+# Adaboost
     adaboost_model=AdaBoostRegressor() 
     model_dict["AdaBoost"]=adaboost_model
-#     随机森林
+# Random forest
     randomfr_model=RandomForestRegressor(n_jobs=n_jobs,random_state=10) 
-    model_dict["随机森林"]=randomfr_model
-    #极端随机森林
+    model_dict["RF"]=randomfr_model
+# Extremely Random Forest
     etreer_model=ExtraTreesRegressor(n_jobs=n_jobs,random_state=10) 
-    model_dict["极端随机森林"]=etreer_model
-    #提升树
+    model_dict["ExtraTrees"]=etreer_model
+# Gradient boosting tree
     gbr_model=GradientBoostingRegressor() 
-    model_dict["提升树"]=gbr_model
-    #XGBoost
+    model_dict["GBoost"]=gbr_model
+# XGBoost
     xgboostr_model=XGBRegressor(n_jobs=n_jobs,random_state=10) 
     model_dict["XGBoost"]=xgboostr_model
-    #Bagging
+# Bagging
 #     bgr_model=BaggingRegressor(n_jobs=n_jobs,random_state=10) 
 #     model_dict["BaggingRegressor"]=bgr_model
 
     return model_dict
 
-"""分类模型"""
-from sklearn.linear_model import LogisticRegression #Logistic
-from sklearn.neighbors import KNeighborsClassifier #KNN
-from sklearn.naive_bayes import MultinomialNB #朴素贝叶斯
-from sklearn.tree import DecisionTreeClassifier #决策树
-from sklearn.svm import SVC #支持向量机
-from sklearn.neural_network import MLPClassifier #神经网络
-#集成学习：Adaboost,随机森林,极端随机森林,提升树
+"""classification model"""
+from sklearn.linear_model import LogisticRegression # Logistic
+from sklearn.neighbors import KNeighborsClassifier # KNN
+from sklearn.naive_bayes import MultinomialNB # Naive Bayes
+from sklearn.tree import DecisionTreeClassifier # Decision tree
+from sklearn.svm import SVC # SVM
+from sklearn.neural_network import MLPClassifier # ANN
+# Ensemble learning: Adaboost, Random Forest, Extremely Random Forest, Gradient Boosting Tree
 from sklearn.ensemble import AdaBoostClassifier,RandomForestClassifier,ExtraTreesClassifier,GradientBoostingClassifier,BaggingClassifier
 from xgboost import XGBClassifier #XGBoost
 def classification_model(n_jobs):
     model_dict={}
 
-#     lr_model=LogisticRegression(max_iter=1000) #Logistic
+#     lr_model=LogisticRegression(max_iter=1000) # Logistic
 #     model_dict["Logistic"]=lr_model
     
-#     knn_model=KNeighborsClassifier() #KNN
+#     knn_model=KNeighborsClassifier() # KNN
 #     model_dict["KNN"]=knn_model
     
-#     bys_model=MultinomialNB() #朴素贝叶斯
-#     model_dict["朴素贝叶斯"]=bys_model
+#     bys_model=MultinomialNB() # Naive Bayes
+#     model_dict["NB"]=bys_model
     
-#     dtree_model=DecisionTreeClassifier() #决策树
-#     model_dict["决策树"]=dtree_model
+#     dtree_model=DecisionTreeClassifier() # Decision tree
+#     model_dict["DecisionTree"]=dtree_model
     
-#     svm_model=SVC() #支持向量机
-#     model_dict["支持向量机"]=svm_model
+#     svm_model=SVC() # SVM
+#     model_dict["SVM"]=svm_model
     
-#     mlpc_model=MLPClassifier(max_iter=3000) #神经网络
-#     model_dict["神经网络"]=mlpc_model
+#     mlpc_model=MLPClassifier(max_iter=3000) # ANN
+#     model_dict["ANN"]=mlpc_model
 
     adaboostc_model=AdaBoostClassifier(random_state=10)
     model_dict["AdaBoost"]=adaboostc_model
 
     randomfc_model=RandomForestClassifier(n_jobs=n_jobs,random_state=10)
-    model_dict["随机森林"]=randomfc_model
+    model_dict["RF"]=randomfc_model
     
-    etreec_model=ExtraTreesClassifier(random_state=10) #极端随机森林
-    model_dict["极端随机森林"]=etreec_model
+    etreec_model=ExtraTreesClassifier(random_state=10) # Extremely Random Forest
+    model_dict["ExtraTrees"]=etreec_model
     
-    gbc_model=GradientBoostingClassifier(random_state=10) #提升树
-    model_dict["提升树"]=gbc_model
+    gbc_model=GradientBoostingClassifier(random_state=10) # Gradient boosting tree
+    model_dict["GBoost"]=gbc_model
     
     xgboostc_model=XGBClassifier(n_jobs=n_jobs,random_state=10) #XGBoost
     model_dict["XGBoost"]=xgboostc_model
