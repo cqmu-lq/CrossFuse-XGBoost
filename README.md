@@ -1,6 +1,7 @@
 # Data Availability of CrossFuse-XGBoost   
 ### CrossFuse-XGBoost: Accurate prediction of the maximum recommended daily dose through multifeature fusion, cross-validation screening and extreme gradient boosting
 ### Preamble
+
 This repository contains the dataset and code for the paper titled "CrossFuse-XGBoost: Accurate prediction of the maximum recommended daily dose through multifeature fusion, cross-validation screening and extreme gradient boosting".
 
 <img src="https://github.com/cqmu-lq/CrossFuse-XGBoost/blob/main/src/img/Figure1.jpg" alt="CrossFuse"/><br/>
@@ -13,12 +14,24 @@ The data used in this study, together with the software code, have been made acc
 
 2. **src/code**: The Python code for implementing the CrossFuse-XGBoost method and performing the prediction.
 
+## Usage
+To utilize the CrossFuse-XGBoost and replicate the research results, please follow these steps:
 
+1. Clone or download this repository to your local machine.
 
-    $ pip install numpy
-    $ pip install scikit-surprise
+2. Install the required dependencies listed in "src/requirements.txt" using your preferred package manager.
 
+```
+$ conda create -n crossfuse_xgboost python=3.8.13
+$ source activate crossfuse_xgboost
+$ pip install -r requirements.txt
+```
 
+3. Run every cell of "src/data/crossfuse_xgboost.ipynb" in sequence in Jupyter Notebook. Make sure that the data set is stored in the same path as specified in the script.
+
+4. The script will execute the workflow of CrossFuse-XGBoost and generate the predicted maximum recommended daily dose (MRDD) for each compound in the dataset. Comments and functional annotations were added to the code to explain its purpose.
+
+Please refer to the code comments for further instructions on customizing the method or adapting it to your specific use case.
 
 ## Citation
 The citation of this work would be greatly appreciated if you find it valuable or choose to build upon it.
@@ -34,4 +47,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The data of this study, including the dataset and associated findings, are intended for experimental reference only and should not be directly interpreted or used to guide human medicine. The authors do not assume any responsibility or liability for any consequences arising from the use or application of the data. The project is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. in no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the project or the use or other dealings in the project.
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the project.
-
