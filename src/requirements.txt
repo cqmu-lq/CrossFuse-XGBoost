@@ -1,0 +1,10 @@
+pandas
+numpy
+xgboost
+importlib
+time
+surprise
+lightfm
+scipy
+requests
+beautifulsoup4
