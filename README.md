@@ -1,7 +1,7 @@
 # Data Availability of CrossFuse-XGBoost   
 ### CrossFuse-XGBoost: Accurate prediction of the maximum recommended daily dose through multifeature fusion, cross-validation screening and extreme gradient boosting
 ### Preamble
-
+------------
 This repository contains the dataset and code for the paper titled "CrossFuse-XGBoost: Accurate prediction of the maximum recommended daily dose through multifeature fusion, cross-validation screening and extreme gradient boosting".
 
 <img src="https://github.com/cqmu-lq/CrossFuse-XGBoost/blob/main/src/img/Figure1.jpg" alt="CrossFuse"/><br/>
@@ -20,7 +20,7 @@ To utilize the CrossFuse-XGBoost and replicate the research results, please foll
 1. Clone or download this repository to your local machine.
 
 2. Install the required dependencies listed in "src/requirements.txt" using your preferred package manager.
-------------
+
 
 With pip (you'll need [numpy](https://www.numpy.org/), and a C compiler. Windows
 users might prefer using conda):
@@ -42,13 +42,15 @@ For the latest version, you can also clone the repo and build the source
     $ python setup.py install
 
 License and reference
----------------------
+
 
 3. Run every cell of "src/data/crossfuse_xgboost.ipynb" in sequence in Jupyter Notebook. Make sure that the data set is stored in the same path as specified in the script.
 
 4. The script will execute the workflow of CrossFuse-XGBoost and generate the predicted maximum recommended daily dose (MRDD) for each compound in the dataset. Comments and functional annotations were added to the code to explain its purpose.
 
 Please refer to the code comments for further instructions on customizing the method or adapting it to your specific use case.
+
+---------------------
 
 ## Citation
 The citation of this work would be greatly appreciated if you find it valuable or choose to build upon it.
