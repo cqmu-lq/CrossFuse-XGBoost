@@ -20,9 +20,29 @@ To utilize the CrossFuse-XGBoost and replicate the research results, please foll
 1. Clone or download this repository to your local machine.
 
 2. Install the required dependencies listed in "src/requirements.txt" using your preferred package manager.
+------------
+
+With pip (you'll need [numpy](https://www.numpy.org/), and a C compiler. Windows
+users might prefer using conda):
 
     $ pip install numpy
     $ pip install scikit-surprise
+
+With conda:
+
+    $ conda install -c conda-forge scikit-surprise
+
+For the latest version, you can also clone the repo and build the source
+(you'll first need [Cython](https://cython.org/) and
+[numpy](https://www.numpy.org/)):
+
+    $ pip install numpy cython
+    $ git clone https://github.com/NicolasHug/surprise.git
+    $ cd surprise
+    $ python setup.py install
+
+License and reference
+---------------------
 
 3. Run every cell of "src/data/crossfuse_xgboost.ipynb" in sequence in Jupyter Notebook. Make sure that the data set is stored in the same path as specified in the script.
 
